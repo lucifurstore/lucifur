@@ -1,0 +1,136 @@
+.cartPage {
+  padding-top: 140px;
+  padding-bottom: 100px;
+}
+
+.title {
+  font-size: 2.5rem;
+  letter-spacing: 5px;
+  margin-bottom: 50px;
+  text-align: center;
+}
+
+.cartHeader {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text-secondary);
+}
+
+.cartItem {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  align-items: center;
+  padding: 30px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.productInfo {
+  display: flex;
+  gap: 20px;
+}
+
+.productInfo img {
+  width: 100px;
+  aspect-ratio: 3/4;
+  object-fit: cover;
+}
+
+.productInfo h3 {
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+}
+
+.productInfo p {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.removeBtn {
+  font-size: 0.65rem;
+  color: #ff4d4d;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.quantity {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.quantity button {
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.price, .total {
+  font-weight: 700;
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 30px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.summaryCard {
+  background: var(--bg-secondary);
+  padding: 40px;
+}
+
+.summaryCard h2 {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.grandTotal {
+  color: white;
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 20px 0;
+}
+
+.shippingHint {
+  font-size: 0.68rem;
+  color: #f0c040;
+  letter-spacing: 1px;
+  margin-top: -12px;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 768px) {
+  .cartHeader {
+    grid-template-columns: 1fr 1fr;
+  }
+  .cartItem {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+}

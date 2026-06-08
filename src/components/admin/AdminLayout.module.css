@@ -1,0 +1,230 @@
+/* ================================================================
+   Admin Panel Styles — Matching the Lucifur Dark Aesthetic
+   Same CSS variables, Outfit/Inter fonts, uppercase tracking
+================================================================ */
+
+.adminLayout {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg-primary);
+}
+
+/* ── Sidebar ──────────────────────────────────────────── */
+.sidebar {
+  width: 260px;
+  min-height: 100vh;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 200;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebarLogo {
+  padding: 28px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebarLogo h2 {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: var(--text-primary);
+}
+
+.sidebarLogo span {
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  color: var(--text-secondary);
+  display: block;
+  margin-top: 2px;
+}
+
+.sidebarNav {
+  flex: 1;
+  padding: 20px 0;
+  overflow-y: auto;
+}
+
+.navGroup {
+  margin-bottom: 8px;
+}
+
+.navGroupLabel {
+  font-size: 0.6rem;
+  letter-spacing: 3px;
+  color: var(--text-secondary);
+  padding: 10px 24px 6px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  transition: var(--transition);
+  text-transform: uppercase;
+}
+
+.navItem:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.04);
+  border-left-color: var(--text-secondary);
+}
+
+.navItem.active {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.07);
+  border-left-color: var(--text-primary);
+}
+
+.navItem svg {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.navItem.active svg {
+  opacity: 1;
+}
+
+.sidebarFooter {
+  padding: 20px 24px;
+  border-top: 1px solid var(--border);
+}
+
+.logoutBtn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  text-transform: uppercase;
+  font-family: var(--font-main);
+  transition: var(--transition);
+  width: 100%;
+}
+
+.logoutBtn:hover {
+  color: #ff4444;
+}
+
+/* ── Main Content Area ────────────────────────────────── */
+.mainContent {
+  flex: 1;
+  margin-left: 260px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── Top Bar ──────────────────────────────────────────── */
+.topBar {
+  height: 65px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.pageTitle {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.topBarRight {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.adminBadge {
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  padding: 4px 12px;
+  text-transform: uppercase;
+}
+
+.adminName {
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+/* ── Page Content ─────────────────────────────────────── */
+.pageContent {
+  flex: 1;
+  padding: 32px;
+}
+
+/* ── Mobile Toggle ────────────────────────────────────── */
+.mobileToggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.sidebarOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 199;
+}
+
+/* ── Responsive ───────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .mainContent {
+    margin-left: 0;
+  }
+
+  .mobileToggle {
+    display: flex;
+  }
+
+  .sidebarOverlay {
+    display: block;
+  }
+
+  .pageContent {
+    padding: 20px 16px;
+  }
+}

@@ -1,0 +1,112 @@
+.footer {
+  background: var(--bg-secondary);
+  padding: 100px 0 40px;
+  border-top: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.logo {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  letter-spacing: 5px;
+  margin-bottom: 20px;
+}
+
+.description {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  line-height: 1.8;
+  max-width: 300px;
+  margin-bottom: 30px;
+}
+
+.socials {
+  display: flex;
+  gap: 20px;
+}
+
+.socials a {
+  color: var(--text-secondary);
+}
+
+.socials a:hover {
+  color: var(--text-primary);
+}
+
+.linksColumn h3, .newsletter h3 {
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  margin-bottom: 30px;
+  color: white;
+}
+
+.linksColumn ul li {
+  margin-bottom: 15px;
+}
+
+.linksColumn ul li a {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  letter-spacing: 1px;
+}
+
+.linksColumn ul li a:hover {
+  color: var(--text-primary);
+  padding-left: 5px;
+}
+
+.newsletter p {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+}
+
+.subscribeForm {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+}
+
+.subscribeForm input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 0.8rem;
+  outline: none;
+}
+
+.subscribeForm button {
+  color: var(--text-secondary);
+}
+
+.subscribeForm button:hover {
+  color: white;
+}
+
+.footerBottom {
+  margin-top: 80px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  letter-spacing: 1px;
+}
+
+.payments {
+  display: flex;
+  gap: 20px;
+  font-weight: 700;
+}
+
+@media (max-width: 992px) {
+  .footerBottom {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+}

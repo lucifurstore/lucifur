@@ -1,0 +1,157 @@
+.page {
+  padding-top: 140px;
+  padding-bottom: 100px;
+}
+
+.title {
+  font-size: 2.2rem;
+  letter-spacing: 5px;
+  margin-bottom: 48px;
+  text-align: center;
+}
+
+.loading, .empty {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 0.75rem;
+  letter-spacing: 3px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.empty { display: flex; flex-direction: column; align-items: center; }
+
+.ordersList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.orderCard {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  transition: var(--transition);
+}
+
+.orderCard:hover { border-color: var(--text-secondary); }
+
+.orderHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.orderIdLabel {
+  font-size: 0.58rem;
+  letter-spacing: 2px;
+  color: var(--text-secondary);
+  display: block;
+  margin-bottom: 2px;
+}
+
+.orderId {
+  font-family: monospace;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.orderMeta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.orderDate {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  letter-spacing: 1px;
+}
+
+.statusBadge {
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  font-weight: 700;
+  border: 1px solid;
+  padding: 3px 10px;
+}
+
+.itemsPreview {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.previewItem {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.previewImg {
+  width: 48px;
+  aspect-ratio: 3/4;
+  object-fit: cover;
+  background: var(--bg-primary);
+  flex-shrink: 0;
+}
+
+.previewName {
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  margin-bottom: 3px;
+}
+
+.previewMeta {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  letter-spacing: 1px;
+}
+
+.moreItems {
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.orderFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+}
+
+.totalLabel {
+  font-size: 0.58rem;
+  letter-spacing: 2px;
+  color: var(--text-secondary);
+  display: block;
+  margin-bottom: 2px;
+}
+
+.totalAmount {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.paymentStatus {
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .page { padding-top: 110px; }
+  .orderHeader { flex-direction: column; align-items: flex-start; }
+}
