@@ -1,4 +1,6 @@
-require('dotenv').config({ path: '../.env' });
+const dns = require('dns');
+dns.setServers(['8.8.8.8', '8.8.4.4']);
+require('dotenv').config();
 const mongoose = require('mongoose');
 const connectDB = require('../config/db');
 const Product = require('../models/Product');
@@ -185,7 +187,8 @@ const seedDB = async () => {
     console.log('🗑️  Cleared existing data');
 
     // Seed collections
-    const collections = await Collection.insertMany(seedCollections);
+    // const collections = await Collection.insertMany(seedCollections);
+    const collections = await Promise.all(seedCollections.map(c => Collection.create(c)));
     const collectionIds = collections.map((c) => c._id);
     console.log(`✅ Seeded ${collections.length} collections`);
 
