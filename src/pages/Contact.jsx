@@ -22,21 +22,21 @@ const Contact = () => {
                   <MapPin size={24} />
                   <div>
                     <h6>HEADQUARTERS</h6>
-                    <p>123 Luxury Lane, Fashion District<br />New York, NY 10001</p>
+                    <p>bhilwara, rajsthan  <br /></p>
                   </div>
                 </div>
                 <div className={styles.infoItem}>
                   <Mail size={24} />
                   <div>
                     <h6>EMAIL</h6>
-                    <p>support@lucifer.com</p>
+                    <p>lucifer.store@gmail.com</p>
                   </div>
                 </div>
                 <div className={styles.infoItem}>
                   <Phone size={24} />
                   <div>
                     <h6>PHONE</h6>
-                    <p>+1 (888) 582-4337</p>
+                    <p>+91 74128 38671</p>
                   </div>
                 </div>
 

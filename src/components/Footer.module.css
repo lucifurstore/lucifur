@@ -110,3 +110,20 @@
     text-align: center;
   }
 }
+
+.footerBottomTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.credits {
+  text-align: left;
+  margin-top: 8px;
+  font-size: 0.72rem;
+  opacity: 1;
+  letter-spacing: 0.08em;
+  width: 100%;
+  color: inherit;
+}

@@ -69,6 +69,9 @@ const Footer = () => {
             <span>APPLE PAY</span>
           </div>
         </div>
+        <p className={styles.credits}>
+          DESIGNED & DEVELOPED BY <strong>NIYEXA WEB STUDIO</strong> &mdash; JIYA VAJA, NANDIK PATEL & VINAYAK BOKADE
+        </p>
       </div>
     </footer>
   );
