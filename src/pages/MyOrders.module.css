@@ -152,6 +152,218 @@
 }
 
 @media (max-width: 768px) {
-  .page { padding-top: 110px; }
-  .orderHeader { flex-direction: column; align-items: flex-start; }
+  .page {
+    padding-top: 110px;
+    padding-bottom: 60px;
+  }
+  .title {
+    font-size: 1.8rem;
+    margin-bottom: 24px;
+  }
+  .orderHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px 20px;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .orderHeader {
+    padding: 14px 16px;
+  }
+  .itemsPreview {
+    padding: 16px;
+  }
+  .orderFooter {
+    padding: 14px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
+/* Modal overlay and content */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modalContent {
+  background: #121212;
+  border: 1px solid var(--border);
+  padding: 40px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+.modalTitle {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  letter-spacing: 3px;
+  margin-bottom: 24px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+}
+
+.modalItemRow {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 16px 0;
+}
+
+.modalItemHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.checkboxInput {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--text-primary);
+  cursor: pointer;
+}
+
+.modalItemDetails {
+  margin-top: 14px;
+  padding-left: 28px;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 16px;
+}
+
+.modalFormGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.modalLabel {
+  font-size: 0.58rem;
+  letter-spacing: 2px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.modalSelect, .modalInput {
+  background: #1e1e1e;
+  border: 1px solid var(--border);
+  color: #fff;
+  padding: 8px 12px;
+  font-size: 0.78rem;
+  outline: none;
+  font-family: var(--font-main);
+}
+
+.modalSelect:focus, .modalInput:focus {
+  border-color: #fff;
+}
+
+.modalError {
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  color: #f87171;
+  padding: 12px;
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.modalActions {
+  display: flex;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.modalCancelBtn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  padding: 12px 24px;
+  font-size: 0.72rem;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: var(--transition);
+  text-transform: uppercase;
+  flex: 1;
+}
+
+.modalCancelBtn:hover {
+  color: #fff;
+  border-color: #fff;
+}
+
+.modalSubmitBtn {
+  background: #fff;
+  color: #000;
+  border: 1px solid #fff;
+  padding: 12px 24px;
+  font-size: 0.72rem;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: var(--transition);
+  text-transform: uppercase;
+  font-weight: 600;
+  flex: 1;
+}
+
+.modalSubmitBtn:hover {
+  background: #e0e0e0;
+  border-color: #e0e0e0;
+}
+
+.exchangeBadge {
+  font-size: 0.58rem;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+  border: 1px solid;
+  padding: 2px 8px;
+  margin-top: 6px;
+  display: inline-block;
+  text-transform: uppercase;
+}
+
+.exchangeSection {
+  margin-top: 16px;
+  padding: 16px 24px;
+  background: rgba(255, 255, 255, 0.02);
+  border-top: 1px solid var(--border);
+}
+
+.exchangeHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.exchangeTitle {
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.exchangeItemInfo {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
 }

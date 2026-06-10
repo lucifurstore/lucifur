@@ -5,20 +5,20 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState(() => localStorage.getItem('userToken') || null);
+  const [user, setUser] = useState(() => {
+    try {
+      const stored = localStorage.getItem('userInfo');
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  });
   const [loading, setLoading] = useState(true);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState('login'); // 'login' | 'signup'
 
-  // Rehydrate from localStorage on mount
   useEffect(() => {
-    const storedToken = localStorage.getItem('userToken');
-    const storedUser = localStorage.getItem('userInfo');
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
-    }
     setLoading(false);
   }, []);
 
@@ -59,6 +59,8 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('userToken');
     localStorage.removeItem('userInfo');
+    localStorage.removeItem('lucifur_cart');
+    localStorage.removeItem('lucifur_wishlist');
     setToken(null);
     setUser(null);
   };
@@ -74,11 +76,13 @@ export const AuthProvider = ({ children }) => {
   };
 
   const authFetch = async (url, options = {}) => {
+    // Always read the latest token from localStorage to avoid stale closure
+    const currentToken = localStorage.getItem('userToken') || token;
     const res = await fetch(`${API_URL}${url}`, {
       ...options,
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${currentToken}`,
         ...(options.headers || {}),
       },
     });

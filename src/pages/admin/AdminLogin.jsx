@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useDocumentTitle } from '../../utils/useDocumentTitle';
 import styles from './AdminLogin.module.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -10,6 +11,10 @@ const AdminLogin = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
+  useDocumentTitle('Admin Access');
+
+  const expiredMessage = location.state?.expired ? "Your session has expired. Please log in again." : "";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,11 +45,16 @@ const AdminLogin = () => {
     <div className={styles.loginPage}>
       <div className={styles.loginCard}>
         <div className={styles.loginHeader}>
-          <h1>LUCIFER</h1>
+          <h1>LUCIFUR</h1>
           <div className={styles.divider} />
           <p>Admin Panel Access</p>
         </div>
 
+        {expiredMessage && (
+          <div style={{ color: '#f0c040', border: '1px solid rgba(240, 192, 64, 0.3)', background: 'rgba(240, 192, 64, 0.08)', padding: '10px 14px', fontSize: '0.8rem', letterSpacing: '1px', marginBottom: '16px', textAlign: 'center' }}>
+            {expiredMessage}
+          </div>
+        )}
         {error && <div className={styles.errorMsg}>{error}</div>}
 
         <form onSubmit={handleSubmit}>
@@ -53,9 +63,10 @@ const AdminLogin = () => {
             <input
               id="admin-email"
               type="email"
-              placeholder="admin@lucifer.com"
+              placeholder="admin@lucifur.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
               required
             />
           </div>
@@ -67,6 +78,7 @@ const AdminLogin = () => {
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
               required
             />
           </div>

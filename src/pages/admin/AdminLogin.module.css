@@ -109,3 +109,22 @@
   margin-bottom: 20px;
   letter-spacing: 0.5px;
 }
+
+@media (max-width: 768px) {
+  .submitBtn {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .loginCard {
+    padding: 32px 20px;
+  }
+  .loginHeader {
+    margin-bottom: 24px;
+  }
+  .loginHeader h1 {
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+  }
+}

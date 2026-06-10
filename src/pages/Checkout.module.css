@@ -247,7 +247,41 @@
 
 .noteInput:focus { border-color: var(--text-primary); }
 
+@media (max-width: 991px) {
+  .summaryCard {
+    position: relative;
+    top: 0;
+    margin-top: 0;
+    padding: 24px 20px;
+  }
+}
+
 @media (max-width: 768px) {
-  .formRow { grid-template-columns: 1fr; }
-  .checkoutPage { padding-top: 110px; }
+  .checkoutPage {
+    padding-top: 110px;
+    padding-bottom: 60px;
+  }
+  .title {
+    font-size: 1.8rem;
+    margin-bottom: 24px;
+  }
+  .formSection {
+    padding: 24px 16px;
+    margin-bottom: 16px;
+  }
+  .formRow {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .couponRow {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .couponBtn {
+    width: 100%;
+    text-align: center;
+  }
 }

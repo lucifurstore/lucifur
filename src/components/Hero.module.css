@@ -42,6 +42,8 @@
   max-width: 600px;
   color: var(--text-primary);
   z-index: 10;
+  padding: 0 20px;
+  width: 100%;
 }
 
 .content h4 {
@@ -56,6 +58,10 @@
   line-height: 1.1;
   margin-bottom: 40px;
   letter-spacing: -2px;
+}
+
+.content .ctaBtn {
+  max-width: 260px;
 }
 
 .indicators {
@@ -90,12 +96,40 @@
   .content {
     text-align: center;
     justify-content: center;
+    max-width: 100%;
   }
   .content h1 {
     font-size: 2.5rem;
   }
+  .content h4 {
+    font-size: 0.9rem;
+    letter-spacing: 3px;
+  }
   .indicators {
     right: 50%;
     transform: translateX(50%);
+  }
+}
+
+@media (max-width: 480px) {
+  .content h1 {
+    font-size: 2rem;
+    letter-spacing: -1px;
+    margin-bottom: 24px;
+  }
+  .content h4 {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+  .content .ctaBtn,
+  .content a {
+    width: 100%;
+    max-width: 280px;
+    text-align: center;
+    justify-content: center;
+  }
+  .indicators {
+    bottom: 20px;
   }
 }

@@ -31,6 +31,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 15px;
+  text-align: center;
 }
 
 .categoryOverlay h3 {
@@ -40,6 +42,9 @@
   border-bottom: 2px solid transparent;
   padding-bottom: 5px;
   transition: var(--transition);
+  width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .categoryCard:hover h3 {
@@ -125,10 +130,31 @@
 
 @media (max-width: 768px) {
   .categoryCard {
-    height: 300px;
+    height: 250px;
+  }
+  .categoryOverlay {
+    padding: 10px;
+  }
+  .categoryOverlay h3 {
+    font-size: 0.95rem;
+    letter-spacing: 2px;
+    padding-bottom: 3px;
   }
   .brandContent h2 {
     font-size: 2rem;
+  }
+  .brandShowcase {
+    background-attachment: scroll;
+  }
+}
+
+@media (max-width: 480px) {
+  .categoryCard {
+    height: 200px;
+  }
+  .categoryOverlay h3 {
+    font-size: 0.8rem;
+    letter-spacing: 1px;
   }
 }
 

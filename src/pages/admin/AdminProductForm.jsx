@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, X, Plus } from 'lucide-react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import { adminApi } from '../../utils/adminApi';
+import { useDocumentTitle } from '../../utils/useDocumentTitle';
 import styles from './admin.module.css';
 
 const CATEGORIES = ['HOODIES', 'TSHIRT', 'PANTS', 'OUTERWEAR', 'SHOES', 'JEANS', 'ACCESSORIES'];
@@ -24,8 +25,9 @@ const defaultForm = {
 
 const AdminProductForm = () => {
   const { id } = useParams();
-  const isEdit = Boolean(id);
   const navigate = useNavigate();
+  const isEdit = Boolean(id);
+  useDocumentTitle(isEdit ? 'Edit Product' : 'Add Product');
 
   const [form, setForm] = useState(defaultForm);
   const [collections, setCollections] = useState([]);
@@ -88,6 +90,28 @@ const AdminProductForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    if (!form.name.trim()) {
+      setError('Product name is required');
+      return;
+    }
+    if (!form.description.trim()) {
+      setError('Product description is required');
+      return;
+    }
+    if (form.price === '' || Number(form.price) <= 0) {
+      setError('Price must be greater than 0');
+      return;
+    }
+    if (form.stock === '' || Number(form.stock) < 0) {
+      setError('Stock must be a non-negative number');
+      return;
+    }
+    if (form.images.length === 0) {
+      setError('At least one product image is required');
+      return;
+    }
+
     setLoading(true);
 
     const payload = {
@@ -118,9 +142,8 @@ const AdminProductForm = () => {
     <AdminLayout pageTitle={isEdit ? 'Edit Product' : 'Add Product'}>
       <div className={styles.formPage}>
         <button
-          className={styles.actionBtn}
+          className={`${styles.actionBtn} ${styles.backBtn}`}
           onClick={() => navigate('/admin/products')}
-          style={{ marginBottom: 24, display: 'flex', alignItems: 'center', gap: 6 }}
         >
           <ArrowLeft size={14} /> Back to Products
         </button>
@@ -150,7 +173,7 @@ const AdminProductForm = () => {
                 name="name"
                 value={form.name}
                 onChange={handleChange}
-                placeholder="e.g. LUCIFER OVERSIZED HOODIE"
+                placeholder="e.g. LUCIFUR OVERSIZED HOODIE"
                 required
               />
             </div>
@@ -262,26 +285,17 @@ const AdminProductForm = () => {
           {/* Images */}
           <div className={styles.formCard}>
             <h3>Product Images</h3>
-            <div style={{ display: 'flex', gap: 8 }}>
+            <div className={styles.imageUrlRow}>
               <input
                 value={imageUrl}
                 onChange={(e) => setImageUrl(e.target.value)}
                 placeholder="Paste image URL..."
-                style={{
-                  flex: 1,
-                  background: 'var(--bg-primary)',
-                  border: '1px solid var(--border)',
-                  color: 'var(--text-primary)',
-                  padding: '10px 14px',
-                  fontSize: '0.82rem',
-                  fontFamily: 'var(--font-main)',
-                  outline: 'none',
-                }}
+                className={styles.imageUrlInput}
                 onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addImageUrl())}
               />
               <button
                 type="button"
-                className={`${styles.actionBtn} ${styles.primary}`}
+                className={`${styles.actionBtn} ${styles.primary} ${styles.imageUrlBtn}`}
                 onClick={addImageUrl}
               >
                 <Plus size={14} />

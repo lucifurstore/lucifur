@@ -2,11 +2,15 @@ import React from 'react';
 import { Trash2, Plus, Minus, ArrowLeft, ShoppingBag } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
+import { useDocumentTitle } from '../utils/useDocumentTitle';
 import styles from './Cart.module.css';
 
 const Cart = () => {
   const { cartItems, removeFromCart, updateQuantity, cartSubtotal } = useCart();
   const navigate = useNavigate();
+  const { isAuthenticated, openLogin } = useAuth();
+  useDocumentTitle('Shopping Bag');
 
   const shipping = cartSubtotal > 2000 ? 0 : 99;
   const total = cartSubtotal + shipping;
@@ -32,7 +36,7 @@ const Cart = () => {
                   <div key={`${item._id}-${item.selectedSize}`} className={styles.cartItem}>
                     <div className={styles.productInfo}>
                       {item.image && (
-                        <img src={item.image} alt={item.name} />
+                        <img src={item.image} alt={item.name} loading="lazy" />
                       )}
                       <div>
                         <h3>{item.name}</h3>
@@ -96,7 +100,13 @@ const Cart = () => {
                 </div>
                 <button
                   className="premium-btn w-100 mt-4 d-flex align-items-center justify-content-center gap-2"
-                  onClick={() => navigate('/checkout')}
+                  onClick={() => {
+                    if (isAuthenticated) {
+                      navigate('/checkout');
+                    } else {
+                      openLogin();
+                    }
+                  }}
                 >
                   <ShoppingBag size={18} /> PROCEED TO CHECKOUT
                 </button>

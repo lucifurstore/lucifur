@@ -24,7 +24,7 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   font-family: var(--font-main);
-  overflow-x: hidden;
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -49,6 +49,7 @@ button {
   cursor: pointer;
   border: none;
   background: none;
+  color: inherit;
   font-family: var(--font-main);
   transition: var(--transition);
 }

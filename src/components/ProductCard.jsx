@@ -22,8 +22,9 @@ const ProductCard = ({ product }) => {
     e.preventDefault();
     e.stopPropagation();
     if (!isAuthenticated) { openLogin(); return; }
-    // Default size S — user can change on Product Details page
-    addToCart({ ...product, _id: productId }, 'M');
+    // Pick first available size from the product; fall back to 'M' only as last resort
+    const defaultSize = product.sizes?.[0] || 'M';
+    addToCart({ ...product, _id: productId }, defaultSize);
   };
 
   const handleWishlist = async (e) => {
@@ -42,8 +43,8 @@ const ProductCard = ({ product }) => {
       transition={{ duration: 0.5 }}
     >
       <Link to={`/product/${productId}`} className={styles.imageWrapper}>
-        <img src={mainImage} alt={product.name} className={styles.mainImg} />
-        <img src={hoverImage} alt={product.name} className={styles.hoverImg} />
+        <img src={mainImage} alt={product.name || 'Product image'} className={styles.mainImg} loading="lazy" />
+        <img src={hoverImage} alt={product.name || 'Product image'} className={styles.hoverImg} loading="lazy" />
 
         {product.badge && <span className={styles.badge}>{product.badge}</span>}
 

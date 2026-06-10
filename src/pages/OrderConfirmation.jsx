@@ -1,12 +1,14 @@
 import React from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
 import { CheckCircle, Package, MapPin, ShoppingBag } from 'lucide-react';
+import { useDocumentTitle } from '../utils/useDocumentTitle';
 import styles from './OrderConfirmation.module.css';
 
 const OrderConfirmation = () => {
   const { id } = useParams();
   const location = useLocation();
   const order = location.state?.order;
+  useDocumentTitle('Order Confirmed');
 
   const shortId = id?.slice(-8).toUpperCase();
 
@@ -25,6 +27,14 @@ const OrderConfirmation = () => {
           <span className={styles.orderLabel}>ORDER ID</span>
           <span className={styles.orderValue}>#{shortId}</span>
         </div>
+
+        {!order && (
+          <div style={{ marginTop: 24, padding: '20px', border: '1px solid var(--border)', background: 'rgba(255,255,255,0.02)', textAlign: 'center', marginBottom: 24 }}>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', letterSpacing: '1px', margin: 0 }}>
+              Order details not available — check My Orders for full details
+            </p>
+          </div>
+        )}
 
         {order && (
           <>
@@ -49,7 +59,7 @@ const OrderConfirmation = () => {
               </div>
               {order.orderItems?.map((item, i) => (
                 <div key={i} className={styles.orderItem}>
-                  {item.image && <img src={item.image} alt={item.name} className={styles.itemImg} />}
+                  {item.image && <img src={item.image} alt={item.name} className={styles.itemImg} loading="lazy" />}
                   <div className={styles.itemInfo}>
                     <p className={styles.itemName}>{item.name}</p>
                     <p className={styles.itemMeta}>SIZE: {item.size} · QTY: {item.quantity}</p>
@@ -80,7 +90,7 @@ const OrderConfirmation = () => {
         )}
 
         <div className={styles.actions}>
-          <Link to="/orders" className="premium-btn-outline">
+          <Link to="/orders" state={{ fromOrder: true }} className="premium-btn-outline">
             <Package size={16} style={{ marginRight: 8, verticalAlign: 'middle' }} />
             VIEW MY ORDERS
           </Link>

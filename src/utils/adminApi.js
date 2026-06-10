@@ -20,8 +20,11 @@ export const adminApi = {
     fetch(`${API_URL}/admin/stats`, { headers: authHeaders() }).then(handleResponse),
 
   // Products
-  getProducts: (params = '') =>
-    fetch(`${API_URL}/products?${params}&limit=50`, { headers: authHeaders() }).then(handleResponse),
+  getProducts: (query = '') => {
+    const params = new URLSearchParams(query);
+    if (!params.has('limit')) params.set('limit', '50');
+    return fetch(`${API_URL}/products?${params.toString()}`, { headers: authHeaders() }).then(handleResponse);
+  },
   getProduct: (id) =>
     fetch(`${API_URL}/products/${id}`, { headers: authHeaders() }).then(handleResponse),
   createProduct: (body) =>
@@ -68,6 +71,12 @@ export const adminApi = {
     fetch(`${API_URL}/admin/orders?${params}`, { headers: authHeaders() }).then(handleResponse),
   updateOrder: (id, body) =>
     fetch(`${API_URL}/admin/orders/${id}`, {
+      method: 'PUT',
+      headers: authHeaders(),
+      body: JSON.stringify(body),
+    }).then(handleResponse),
+  updateOrderExchange: (id, body) =>
+    fetch(`${API_URL}/admin/orders/${id}/exchange`, {
       method: 'PUT',
       headers: authHeaders(),
       body: JSON.stringify(body),

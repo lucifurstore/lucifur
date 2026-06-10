@@ -1,7 +1,7 @@
 export const products = [
   {
     id: 1,
-    name: "LUCIFER OVERSIZED HOODIE",
+    name: "LUCIFUR OVERSIZED HOODIE",
     price: 89.99,
     category: "HOODIES",
     image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=600&auto=format&fit=crop",
@@ -31,7 +31,7 @@ export const products = [
   },
   {
     id: 4,
-    name: "LUCIFER GRAPHIC TEE",
+    name: "LUCIFUR GRAPHIC TEE",
     price: 45.00,
     category: "TSHIRT",
     image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=600&auto=format&fit=crop",
@@ -64,7 +64,7 @@ export const products = [
 export const heroSlides = [
   {
     id: 1,
-    title: "THE LUCIFER COLLECTION",
+    title: "THE LUCIFUR COLLECTION",
     subtitle: "STREETWEAR EVOLVED",
     image: "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?q=80&w=1920&auto=format&fit=crop",
     cta: "SHOP NOW"

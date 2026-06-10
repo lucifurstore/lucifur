@@ -1,11 +1,21 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useAuth } from './AuthContext';
 
 const CartContext = createContext();
 
 const CART_KEY = 'lucifur_cart';
 
 export const CartProvider = ({ children }) => {
+  const { user } = useAuth();
   const [cartItems, setCartItems] = useState([]);
+  const [previousUser, setPreviousUser] = useState(user);
+
+  useEffect(() => {
+    if (previousUser && !user) {
+      clearCart();
+    }
+    setPreviousUser(user);
+  }, [user, previousUser]);
 
   // Load from localStorage
   useEffect(() => {
@@ -26,9 +36,10 @@ export const CartProvider = ({ children }) => {
         (item) => item._id === product._id && item.selectedSize === size
       );
       if (existing) {
+        const newQty = existing.quantity + quantity;
         return prev.map((item) =>
           item._id === product._id && item.selectedSize === size
-            ? { ...item, quantity: item.quantity + quantity }
+            ? { ...item, quantity: Math.min(newQty, 10) }
             : item
         );
       }
@@ -41,7 +52,7 @@ export const CartProvider = ({ children }) => {
           image: product.images?.[0] || product.image || '',
           category: product.category,
           selectedSize: size,
-          quantity,
+          quantity: Math.min(quantity, 10),
         },
       ];
     });
@@ -55,6 +66,7 @@ export const CartProvider = ({ children }) => {
 
   const updateQuantity = (productId, size, quantity) => {
     if (quantity < 1) return removeFromCart(productId, size);
+    if (quantity > 10) return;
     setCartItems((prev) =>
       prev.map((item) =>
         item._id === productId && item.selectedSize === size

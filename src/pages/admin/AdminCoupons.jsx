@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Plus, Trash2, X } from 'lucide-react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import { adminApi } from '../../utils/adminApi';
+import { useDocumentTitle } from '../../utils/useDocumentTitle';
 import styles from './admin.module.css';
 
 const defaultForm = {
@@ -14,6 +15,7 @@ const defaultForm = {
 };
 
 const AdminCoupons = () => {
+  useDocumentTitle('Admin Coupons');
   const [coupons, setCoupons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -76,8 +78,8 @@ const AdminCoupons = () => {
   return (
     <AdminLayout pageTitle="Coupons">
       {showModal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 999, padding: 20 }}>
-          <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border)', padding: 36, width: '100%', maxWidth: 480 }}>
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
               <h2 style={{ fontSize: '0.85rem', letterSpacing: '3px', textTransform: 'uppercase' }}>New Coupon</h2>
               <button onClick={() => setShowModal(false)} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}><X size={18} /></button>
@@ -129,9 +131,11 @@ const AdminCoupons = () => {
       <div className={styles.tableWrapper}>
         <div className={styles.tableHeader}>
           <h2>All Coupons ({coupons.length})</h2>
-          <button className={`${styles.actionBtn} ${styles.primary}`} onClick={() => { setForm(defaultForm); setError(''); setShowModal(true); }}>
-            <Plus size={14} style={{ marginRight: 4, verticalAlign: 'middle' }} />New Coupon
-          </button>
+          <div className={styles.headerActions}>
+            <button className={`${styles.actionBtn} ${styles.primary}`} onClick={() => { setForm(defaultForm); setError(''); setShowModal(true); }} style={{ width: '100%' }}>
+              <Plus size={14} style={{ marginRight: 4, verticalAlign: 'middle' }} />New Coupon
+            </button>
+          </div>
         </div>
 
         {loading ? (
@@ -139,13 +143,13 @@ const AdminCoupons = () => {
         ) : coupons.length === 0 ? (
           <div className={styles.emptyState}>No coupons yet</div>
         ) : (
-          <table className={styles.table}>
+          <table className={`${styles.table} ${styles.tableCoupons}`}>
             <thead>
               <tr>
                 <th>Code</th>
                 <th>Discount</th>
-                <th>Min Order</th>
-                <th>Usage</th>
+                <th className={styles.hideBelow768}>Min Order</th>
+                <th className={styles.hideBelow600}>Usage</th>
                 <th>Expires</th>
                 <th>Status</th>
                 <th>Actions</th>
@@ -160,8 +164,8 @@ const AdminCoupons = () => {
                     <td>
                       {c.discountType === 'percentage' ? `${c.discountValue}%` : `₹${c.discountValue}`}
                     </td>
-                    <td style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>₹{c.minOrderAmount}</td>
-                    <td style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>{c.usedCount} / {c.maxUses}</td>
+                    <td className={styles.hideBelow768} style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>₹{c.minOrderAmount}</td>
+                    <td className={styles.hideBelow600} style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>{c.usedCount} / {c.maxUses}</td>
                     <td style={{ color: isExpired ? '#f87171' : 'var(--text-secondary)', fontSize: '0.78rem' }}>{formatDate(c.expiresAt)}</td>
                     <td>
                       {isExpired ? (

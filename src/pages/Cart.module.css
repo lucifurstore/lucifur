@@ -38,6 +38,7 @@
   width: 100px;
   aspect-ratio: 3/4;
   object-fit: cover;
+  flex-shrink: 0;
 }
 
 .productInfo h3 {
@@ -57,21 +58,32 @@
   display: flex;
   align-items: center;
   gap: 5px;
+  min-height: 44px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
 }
 
 .quantity {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
 }
 
 .quantity button {
-  width: 24px;
-  height: 24px;
+  width: 36px;
+  height: 36px;
   border: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
+  background: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  /* 44px touch target via padding */
+  min-width: 44px;
+  min-height: 44px;
 }
 
 .price, .total {
@@ -85,6 +97,7 @@
   margin-top: 30px;
   font-size: 0.8rem;
   font-weight: 600;
+  min-height: 44px;
 }
 
 .summaryCard {
@@ -125,12 +138,54 @@
   margin-bottom: 12px;
 }
 
+/* ── Responsive ──────────────────────────────────── */
 @media (max-width: 768px) {
-  .cartHeader {
-    grid-template-columns: 1fr 1fr;
+  .cartPage {
+    padding-top: 110px;
+    padding-bottom: 60px;
   }
+
+  .title {
+    font-size: 1.8rem;
+    letter-spacing: 3px;
+    margin-bottom: 30px;
+  }
+
+  /* Hide desktop column headers on mobile */
+  .cartHeader {
+    display: none;
+  }
+
+  /* Single column stacked layout */
   .cartItem {
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 20px 0;
+  }
+
+  .productInfo {
+    gap: 14px;
+  }
+
+  .productInfo img {
+    width: 80px;
+  }
+
+  .summaryCard {
+    padding: 24px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .productInfo img {
+    width: 64px;
+  }
+
+  .productInfo h3 {
+    font-size: 0.8rem;
+  }
+
+  .quantity {
+    gap: 8px;
   }
 }

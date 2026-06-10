@@ -10,7 +10,6 @@ import {
   LogOut,
   Menu,
   X,
-  ChevronRight,
 } from 'lucide-react';
 import styles from './AdminLayout.module.css';
 
@@ -64,7 +63,7 @@ const AdminLayout = ({ children, pageTitle }) => {
       {/* Sidebar */}
       <aside className={`${styles.sidebar} ${sidebarOpen ? styles.open : ''}`}>
         <div className={styles.sidebarLogo}>
-          <h2>LUCIFER</h2>
+          <h2>LUCIFUR</h2>
           <span>ADMIN PANEL</span>
         </div>
 
@@ -104,7 +103,7 @@ const AdminLayout = ({ children, pageTitle }) => {
       <div className={styles.mainContent}>
         {/* Top Bar */}
         <header className={styles.topBar}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div className={styles.topBarLeft}>
             <button
               className={styles.mobileToggle}
               onClick={() => setSidebarOpen(!sidebarOpen)}

@@ -17,3 +17,16 @@
   color: var(--text-secondary);
   margin-bottom: 48px;
 }
+
+@media (max-width: 768px) {
+  .wishlistPage {
+    padding-top: 110px;
+    padding-bottom: 60px;
+  }
+  .title {
+    font-size: 1.8rem;
+  }
+  .count {
+    margin-bottom: 24px;
+  }
+}

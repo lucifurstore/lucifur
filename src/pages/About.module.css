@@ -57,7 +57,34 @@
 }
 
 @media (max-width: 768px) {
+  .aboutHero {
+    height: 40vh;
+  }
   .aboutHero h1 {
     font-size: 2.5rem;
+    letter-spacing: 8px;
+  }
+  .visionSection {
+    padding: 60px 0;
+  }
+  .visionSection h2 {
+    font-size: 1.8rem;
+  }
+  .visionSection p {
+    font-size: 0.95rem;
+  }
+  .aboutContent h2 {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .aboutHero h1 {
+    font-size: 1.8rem;
+    letter-spacing: 5px;
+  }
+  .aboutHero p {
+    font-size: 0.8rem;
+    letter-spacing: 3px;
   }
 }

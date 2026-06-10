@@ -4,11 +4,13 @@ import ProductCard from '../components/ProductCard';
 import { useWishlist } from '../context/WishlistContext';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
+import { useDocumentTitle } from '../utils/useDocumentTitle';
 import styles from './Wishlist.module.css';
 
 const Wishlist = () => {
-  const { wishlist } = useWishlist();
+  const { wishlist, error, retryFetch } = useWishlist();
   const { isAuthenticated, openLogin } = useAuth();
+  useDocumentTitle('Wishlist');
 
   if (!isAuthenticated) {
     return (
@@ -19,6 +21,20 @@ const Wishlist = () => {
             SIGN IN TO SEE YOUR WISHLIST
           </p>
           <button className="premium-btn" onClick={openLogin}>SIGN IN</button>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.wishlistPage}>
+        <div className="container-fluid text-center py-5">
+          <Heart size={60} strokeWidth={0.8} style={{ opacity: 0.3, marginBottom: 20, display: 'block', margin: '0 auto' }} />
+          <p style={{ letterSpacing: '2px', color: 'var(--text-secondary)', marginBottom: 24 }}>
+            COULD NOT FETCH WISHLIST: {error.toUpperCase()}
+          </p>
+          <button className="premium-btn" onClick={retryFetch}>RETRY</button>
         </div>
       </div>
     );

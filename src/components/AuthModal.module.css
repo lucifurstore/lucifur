@@ -163,3 +163,19 @@
   font-size: 0.75rem;
   font-family: var(--font-main);
 }
+
+@media (max-width: 480px) {
+  .modal {
+    padding: 32px 20px;
+  }
+  .header {
+    margin-bottom: 24px;
+  }
+  .header h2 {
+    font-size: 1.3rem;
+    letter-spacing: 3px;
+  }
+  .tabs {
+    margin-bottom: 20px;
+  }
+}

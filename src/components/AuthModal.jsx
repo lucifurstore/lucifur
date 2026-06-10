@@ -50,7 +50,7 @@ const AuthModal = () => {
         </button>
 
         <div className={styles.header}>
-          <h2>LUCIFER</h2>
+          <h2>LUCIFUR</h2>
           <p>{authMode === 'login' ? 'Welcome back' : 'Create your account'}</p>
         </div>
 
@@ -82,6 +82,7 @@ const AuthModal = () => {
                 placeholder="Your name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                autoComplete="name"
                 required
               />
             </div>
@@ -94,6 +95,7 @@ const AuthModal = () => {
               placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
               required
             />
           </div>
@@ -105,6 +107,7 @@ const AuthModal = () => {
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              autoComplete={authMode === 'login' ? 'current-password' : 'new-password'}
               required
             />
           </div>

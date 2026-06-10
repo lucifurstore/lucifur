@@ -86,8 +86,43 @@ router.put(
       res.status(404);
       throw new Error('Order not found');
     }
-    if (status) order.status = status;
+    if (status) {
+      order.status = status;
+      if (status === 'delivered' && !order.deliveredAt) {
+        order.deliveredAt = new Date();
+      }
+    }
     if (paymentStatus) order.paymentStatus = paymentStatus;
+    const updatedOrder = await order.save();
+    res.json({ success: true, data: updatedOrder });
+  })
+);
+
+// @desc  Update order exchange request status & notes
+// @route PUT /api/admin/orders/:id/exchange
+// @access Admin
+router.put(
+  '/orders/:id/exchange',
+  asyncHandler(async (req, res) => {
+    const { status, adminNotes } = req.body;
+    const order = await Order.findById(req.params.id);
+    if (!order) {
+      res.status(404);
+      throw new Error('Order not found');
+    }
+
+    if (!order.exchangeRequest || !order.exchangeRequest.isRequested) {
+      res.status(400);
+      throw new Error('No exchange request exists for this order');
+    }
+
+    if (status) {
+      order.exchangeRequest.status = status;
+    }
+    if (adminNotes !== undefined) {
+      order.exchangeRequest.adminNotes = adminNotes;
+    }
+
     const updatedOrder = await order.save();
     res.json({ success: true, data: updatedOrder });
   })

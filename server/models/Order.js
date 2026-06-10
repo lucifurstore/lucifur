@@ -64,6 +64,44 @@ const orderSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    deliveredAt: {
+      type: Date,
+    },
+    exchangeRequest: {
+      isRequested: { type: Boolean, default: false },
+      status: {
+        type: String,
+        enum: ['pending', 'approved', 'rejected', 'completed'],
+        default: 'pending',
+      },
+      items: [
+        {
+          product: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Product',
+            required: true,
+          },
+          name: { type: String, required: true },
+          size: { type: String, required: true },
+          newSize: { type: String, required: true },
+          reason: { type: String, required: true },
+        },
+      ],
+      requestedAt: { type: Date },
+      adminNotes: { type: String, default: '' },
+    },
+    razorpayOrderId: {
+      type: String,
+      default: null,
+    },
+    razorpayPaymentId: {
+      type: String,
+      default: null,
+    },
+    razorpaySignature: {
+      type: String,
+      default: null,
+    },
   },
   { timestamps: true }
 );

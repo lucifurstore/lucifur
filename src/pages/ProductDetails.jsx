@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
+import { useDocumentTitle } from '../utils/useDocumentTitle';
 import styles from './ProductDetails.module.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -22,15 +23,22 @@ const ProductDetails = () => {
   const [activeImg, setActiveImg] = useState('');
   const [addedToCart, setAddedToCart] = useState(false);
 
+  useDocumentTitle(product ? product.name : 'Product Details');
+
   useEffect(() => {
     setLoading(true);
     fetch(`${API_URL}/products/${id}`)
       .then((r) => r.json())
       .then((data) => {
         if (data.success) {
-          setProduct(data.data);
-          setActiveImg(data.data.images?.[0] || '');
-          setSelectedSize(data.data.sizes?.[1] || data.data.sizes?.[0] || 'M');
+          const p = data.data;
+          setProduct(p);
+          setActiveImg(p.images?.[0] || '');
+          if (!p.sizes || p.sizes.length === 0) {
+            setSelectedSize('ONE SIZE');
+          } else {
+            setSelectedSize(p.sizes[0] || '');
+          }
         }
       })
       .catch(console.error)
@@ -75,14 +83,14 @@ const ProductDetails = () => {
     <div className={styles.detailsPage}>
       <div className="container-fluid">
         <nav className={styles.breadcrumb}>
-          <Link to="/">HOME</Link> / <Link to="/shop">SHOP</Link> / <span>{product.name}</span>
+          <Link to="/">HOME</Link> / <Link to="/shop">SHOP</Link> / <span className={styles.breadcrumbName}>{product.name}</span>
         </nav>
 
         <div className="row g-5">
           {/* Image Gallery */}
           <div className="col-lg-7">
-            <div className="row">
-              <div className="col-2">
+            <div className="row g-3">
+              <div className="col-md-2 col-12 order-2 order-md-1">
                 <div className={styles.thumbnails}>
                   {product.images?.map((img, i) => (
                     <img
@@ -91,18 +99,19 @@ const ProductDetails = () => {
                       className={activeImg === img ? styles.activeThumb : ''}
                       onClick={() => setActiveImg(img)}
                       alt={`${product.name} view ${i + 1}`}
+                      loading="lazy"
                     />
                   ))}
                 </div>
               </div>
-              <div className="col-10">
+              <div className="col-md-10 col-12 order-1 order-md-2">
                 <motion.div
                   className={styles.mainImageWrapper}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   key={activeImg}
                 >
-                  <img src={activeImg} alt={product.name} className={styles.mainImage} />
+                  <img src={activeImg} alt={product.name} className={styles.mainImage} loading="lazy" />
                 </motion.div>
               </div>
             </div>
@@ -133,23 +142,25 @@ const ProductDetails = () => {
               )}
 
               {/* Size Selection */}
-              <div className={styles.sizeSection}>
-                <div className="d-flex justify-content-between align-items-center mb-3">
-                  <span className={styles.label}>SELECT SIZE</span>
-                  <button className={styles.sizeGuide}>SIZE GUIDE</button>
+              {product.sizes && product.sizes.length > 0 && (
+                <div className={styles.sizeSection}>
+                  <div className="d-flex justify-content-between align-items-center mb-3">
+                    <span className={styles.label}>SELECT SIZE</span>
+                    <button className={styles.sizeGuide}>SIZE GUIDE</button>
+                  </div>
+                  <div className={styles.sizeOptions}>
+                    {product.sizes?.map((size) => (
+                      <button
+                        key={size}
+                        className={`${styles.sizeBtn} ${selectedSize === size ? styles.selected : ''}`}
+                        onClick={() => setSelectedSize(size)}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <div className={styles.sizeOptions}>
-                  {product.sizes?.map((size) => (
-                    <button
-                      key={size}
-                      className={`${styles.sizeBtn} ${selectedSize === size ? styles.selected : ''}`}
-                      onClick={() => setSelectedSize(size)}
-                    >
-                      {size}
-                    </button>
-                  ))}
-                </div>
-              </div>
+              )}
 
               {/* Stock indicator */}
               {product.stock < 10 && product.stock > 0 && (
@@ -163,10 +174,10 @@ const ProductDetails = () => {
                 <button
                   className="premium-btn w-100 mb-3 d-flex align-items-center justify-content-center gap-2"
                   onClick={handleAddToCart}
-                  disabled={product.stock === 0}
+                  disabled={product.stock === 0 || !selectedSize}
                 >
                   <ShoppingBag size={18} />
-                  {addedToCart ? '✓ ADDED TO BAG' : product.stock === 0 ? 'OUT OF STOCK' : 'ADD TO BAG'}
+                  {addedToCart ? '✓ ADDED TO BAG' : product.stock === 0 ? 'OUT OF STOCK' : !selectedSize ? 'SELECT A SIZE' : 'ADD TO BAG'}
                 </button>
                 <button
                   className={`premium-btn-outline w-100 d-flex align-items-center justify-content-center gap-2 ${wishlisted ? styles.wishlisted : ''}`}
@@ -181,7 +192,7 @@ const ProductDetails = () => {
                 {[
                   { icon: <Truck size={20} />, title: 'FREE SHIPPING', text: 'On all orders above ₹2000' },
                   { icon: <ShieldCheck size={20} />, title: 'SECURE TRANSACTION', text: 'Your data is protected by SSL' },
-                  { icon: <RefreshCw size={20} />, title: 'EASY RETURNS', text: '30-day money back guarantee' },
+                  { icon: <RefreshCw size={20} />, title: '2-DAY EXCHANGE', text: 'No returns, exchange in 2 days' },
                 ].map(({ icon, title, text }) => (
                   <div key={title} className={styles.perkItem}>
                     {icon}

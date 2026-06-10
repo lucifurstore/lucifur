@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 // Providers
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
 
@@ -23,6 +23,9 @@ import Wishlist from './pages/Wishlist';
 import Checkout from './pages/Checkout';
 import OrderConfirmation from './pages/OrderConfirmation';
 import MyOrders from './pages/MyOrders';
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
+import NotFound from './pages/NotFound';
 
 // Admin Pages
 import AdminLogin from './pages/admin/AdminLogin';
@@ -48,43 +51,72 @@ function CustomerLayout({ children }) {
   );
 }
 
+function AppContent() {
+  const { loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
+        background: '#0a0a0a',
+        color: '#ffffff',
+        fontFamily: 'var(--font-main, sans-serif)',
+        letterSpacing: '3px',
+        fontSize: '0.9rem'
+      }}>
+        LOADING...
+      </div>
+    );
+  }
+
+  return (
+    <Router>
+      <Routes>
+        {/* ── Admin Routes (no customer chrome) ── */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
+        <Route path="/admin/products" element={<ProtectedAdminRoute><AdminProducts /></ProtectedAdminRoute>} />
+        <Route path="/admin/products/add" element={<ProtectedAdminRoute><AdminProductForm /></ProtectedAdminRoute>} />
+        <Route path="/admin/products/edit/:id" element={<ProtectedAdminRoute><AdminProductForm /></ProtectedAdminRoute>} />
+        <Route path="/admin/collections" element={<ProtectedAdminRoute><AdminCollections /></ProtectedAdminRoute>} />
+        <Route path="/admin/orders" element={<ProtectedAdminRoute><AdminOrders /></ProtectedAdminRoute>} />
+        <Route path="/admin/users" element={<ProtectedAdminRoute><AdminUsers /></ProtectedAdminRoute>} />
+        <Route path="/admin/coupons" element={<ProtectedAdminRoute><AdminCoupons /></ProtectedAdminRoute>} />
+
+        {/* ── Customer Routes ── */}
+        <Route path="/*" element={
+          <CustomerLayout>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/shop" element={<Shop />} />
+              <Route path="/product/:id" element={<ProductDetails />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/wishlist" element={<Wishlist />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
+              <Route path="/orders" element={<MyOrders />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </CustomerLayout>
+        } />
+      </Routes>
+    </Router>
+  );
+}
+
 function App() {
   return (
     <AuthProvider>
       <CartProvider>
         <WishlistProvider>
-          <Router>
-            <Routes>
-              {/* ── Admin Routes (no customer chrome) ── */}
-              <Route path="/admin/login" element={<AdminLogin />} />
-              <Route path="/admin/dashboard"   element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
-              <Route path="/admin/products"    element={<ProtectedAdminRoute><AdminProducts /></ProtectedAdminRoute>} />
-              <Route path="/admin/products/add"      element={<ProtectedAdminRoute><AdminProductForm /></ProtectedAdminRoute>} />
-              <Route path="/admin/products/edit/:id" element={<ProtectedAdminRoute><AdminProductForm /></ProtectedAdminRoute>} />
-              <Route path="/admin/collections" element={<ProtectedAdminRoute><AdminCollections /></ProtectedAdminRoute>} />
-              <Route path="/admin/orders"      element={<ProtectedAdminRoute><AdminOrders /></ProtectedAdminRoute>} />
-              <Route path="/admin/users"       element={<ProtectedAdminRoute><AdminUsers /></ProtectedAdminRoute>} />
-              <Route path="/admin/coupons"     element={<ProtectedAdminRoute><AdminCoupons /></ProtectedAdminRoute>} />
-
-              {/* ── Customer Routes ── */}
-              <Route path="/*" element={
-                <CustomerLayout>
-                  <Routes>
-                    <Route path="/"                            element={<Home />} />
-                    <Route path="/shop"                        element={<Shop />} />
-                    <Route path="/product/:id"                 element={<ProductDetails />} />
-                    <Route path="/about"                       element={<About />} />
-                    <Route path="/contact"                     element={<Contact />} />
-                    <Route path="/cart"                        element={<Cart />} />
-                    <Route path="/wishlist"                    element={<Wishlist />} />
-                    <Route path="/checkout"                    element={<Checkout />} />
-                    <Route path="/order-confirmation/:id"      element={<OrderConfirmation />} />
-                    <Route path="/orders"                      element={<MyOrders />} />
-                  </Routes>
-                </CustomerLayout>
-              } />
-            </Routes>
-          </Router>
+          <AppContent />
         </WishlistProvider>
       </CartProvider>
     </AuthProvider>

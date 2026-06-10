@@ -1,8 +1,10 @@
 import React from 'react';
 import styles from './About.module.css';
 import { motion } from 'framer-motion';
+import { useDocumentTitle } from '../utils/useDocumentTitle';
 
 const About = () => {
+  useDocumentTitle('Our Story');
   return (
     <div className={styles.aboutPage}>
       <header className={styles.aboutHero}>
@@ -38,7 +40,7 @@ const About = () => {
               <div className={styles.aboutContent}>
                 <h2>THE MANIFESTO</h2>
                 <p>
-                  Founded in 2024, LUCIFER was born from a desire to bridge the gap between high-end luxury and raw urban streetwear. Our pieces are designed for those who navigate the world with confidence and a taste for the darker side of elegance.
+                  Founded in 2024, LUCIFUR was born from a desire to bridge the gap between high-end luxury and raw urban streetwear. Our pieces are designed for those who navigate the world with confidence and a taste for the darker side of elegance.
                 </p>
                 <p>
                   Every garment is a testament to our commitment to quality. We source the finest materials from across the globe, ensuring that each piece not only looks exceptional but stands the test of time and trend.

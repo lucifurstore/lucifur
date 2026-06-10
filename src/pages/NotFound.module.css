@@ -1,0 +1,56 @@
+.notFoundPage {
+  background: var(--bg-primary);
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 0;
+}
+
+.contentCard {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  padding: 60px 40px;
+  border-radius: 4px;
+}
+
+.title {
+  font-size: 6rem;
+  letter-spacing: 10px;
+  margin-bottom: 10px;
+  color: var(--text-primary);
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  letter-spacing: 4px;
+  margin-bottom: 20px;
+  color: var(--text-primary);
+}
+
+.description {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.8;
+  margin-bottom: 40px;
+}
+
+@media (max-width: 768px) {
+  .notFoundPage {
+    min-height: 60vh;
+    padding: 60px 0;
+  }
+  
+  .contentCard {
+    padding: 40px 20px;
+  }
+
+  .title {
+    font-size: 4rem;
+    letter-spacing: 5px;
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+  }
+}

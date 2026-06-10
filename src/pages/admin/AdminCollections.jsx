@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Plus, Pencil, Trash2, X } from 'lucide-react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import { adminApi } from '../../utils/adminApi';
+import { useDocumentTitle } from '../../utils/useDocumentTitle';
 import styles from './admin.module.css';
 
 const defaultForm = { name: '', description: '', image: '' };
 
 const AdminCollections = () => {
+  useDocumentTitle('Admin Collections');
   const [collections, setCollections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -75,19 +77,8 @@ const AdminCollections = () => {
     <AdminLayout pageTitle="Collections">
       {/* Modal */}
       {showModal && (
-        <div
-          style={{
-            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            zIndex: 999, padding: 20,
-          }}
-        >
-          <div
-            style={{
-              background: 'var(--bg-secondary)', border: '1px solid var(--border)',
-              padding: '36px', width: '100%', maxWidth: '480px',
-            }}
-          >
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
               <h2 style={{ fontSize: '0.85rem', letterSpacing: '3px', textTransform: 'uppercase' }}>
                 {editId ? 'Edit Collection' : 'New Collection'}
@@ -116,7 +107,7 @@ const AdminCollections = () => {
                 <label>Cover Image URL</label>
                 <input name="image" value={form.image} onChange={handleChange} placeholder="https://..." />
                 {form.image && (
-                  <img src={form.image} alt="preview" style={{ marginTop: 8, height: 80, width: '100%', objectFit: 'cover', border: '1px solid var(--border)' }} />
+                  <img src={form.image} alt="preview" style={{ marginTop: 8, height: '80px', maxHeight: '120px', width: '100%', objectFit: 'cover', border: '1px solid var(--border)' }} />
                 )}
               </div>
               <div className={styles.formActions}>
@@ -133,10 +124,12 @@ const AdminCollections = () => {
       <div className={styles.tableWrapper}>
         <div className={styles.tableHeader}>
           <h2>All Collections ({collections.length})</h2>
-          <button className={`${styles.actionBtn} ${styles.primary}`} onClick={openAdd}>
-            <Plus size={14} style={{ marginRight: 4, verticalAlign: 'middle' }} />
-            New Collection
-          </button>
+          <div className={styles.headerActions}>
+            <button className={`${styles.actionBtn} ${styles.primary}`} onClick={openAdd} style={{ width: '100%' }}>
+              <Plus size={14} style={{ marginRight: 4, verticalAlign: 'middle' }} />
+              New Collection
+            </button>
+          </div>
         </div>
 
         {loading ? (
@@ -144,13 +137,13 @@ const AdminCollections = () => {
         ) : collections.length === 0 ? (
           <div className={styles.emptyState}>No collections yet. Create your first one.</div>
         ) : (
-          <table className={styles.table}>
+          <table className={`${styles.table} ${styles.tableCollections}`}>
             <thead>
               <tr>
                 <th>Cover</th>
                 <th>Name</th>
-                <th>Slug</th>
-                <th>Description</th>
+                <th className={styles.hideBelow768}>Slug</th>
+                <th className={styles.hideBelow600}>Description</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -165,10 +158,10 @@ const AdminCollections = () => {
                     )}
                   </td>
                   <td style={{ fontWeight: 500 }}>{col.name}</td>
-                  <td style={{ fontFamily: 'monospace', fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
+                  <td className={styles.hideBelow768} style={{ fontFamily: 'monospace', fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
                     {col.slug}
                   </td>
-                  <td style={{ color: 'var(--text-secondary)', fontSize: '0.78rem', maxWidth: 200 }}>
+                  <td className={styles.hideBelow600} style={{ color: 'var(--text-secondary)', fontSize: '0.78rem', maxWidth: 200 }}>
                     {col.description || '—'}
                   </td>
                   <td>

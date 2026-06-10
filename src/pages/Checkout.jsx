@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useDocumentTitle } from '../utils/useDocumentTitle';
 import styles from './Checkout.module.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -13,10 +14,26 @@ const defaultAddress = {
   state: '', zipCode: '', country: 'India',
 };
 
+const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+    if (window.Razorpay) {
+      resolve(true);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.async = true;
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
+
 const Checkout = () => {
   const { cartItems, cartSubtotal, clearCart } = useCart();
   const { user, token } = useAuth();
   const navigate = useNavigate();
+  useDocumentTitle('Checkout');
 
   const [address, setAddress] = useState({
     ...defaultAddress,
@@ -28,6 +45,7 @@ const Checkout = () => {
   const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('COD');
 
   const shipping = cartSubtotal > 2000 ? 0 : 99;
   const discount = couponStatus?.discount || 0;
@@ -39,12 +57,31 @@ const Checkout = () => {
 
   const applyCoupon = async () => {
     if (!couponCode.trim()) return;
+    setCouponStatus(null);
     try {
-      // We validate by attempting to use it (the order API will validate)
-      // For UI, just store it; actual validation happens on order submit
-      setCouponStatus({ discount: 0, message: '✓ Coupon will be applied on checkout' });
+      const currentToken = localStorage.getItem('userToken') || token;
+      const res = await fetch(`${API_URL}/coupons/validate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(currentToken ? { Authorization: `Bearer ${currentToken}` } : {}),
+        },
+        body: JSON.stringify({ code: couponCode.trim(), subtotal: cartSubtotal }),
+      });
+      if (res.status === 404) {
+        throw new Error('Coupon validation unavailable');
+      }
+      let data;
+      try {
+        data = await res.json();
+      } catch (parseError) {
+        throw new Error('Coupon validation unavailable');
+      }
+      if (!res.ok) throw new Error(data.message || 'Invalid coupon');
+      const discountAmount = data.data?.discount || 0;
+      setCouponStatus({ discount: discountAmount, message: `✓ Coupon applied — ₹${discountAmount.toFixed(2)} off!` });
     } catch (e) {
-      setCouponStatus({ error: true, message: e.message });
+      setCouponStatus({ error: true, discount: 0, message: e.message });
     }
   };
 
@@ -63,28 +100,102 @@ const Checkout = () => {
       quantity: item.quantity,
     }));
 
+    const currentToken = localStorage.getItem('userToken') || token;
     try {
       const res = await fetch(`${API_URL}/orders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...(currentToken ? { Authorization: `Bearer ${currentToken}` } : {}),
         },
         body: JSON.stringify({
           orderItems,
           shippingAddress: address,
-          couponCode: couponCode.trim() || undefined,
+          couponCode: (couponStatus && !couponStatus.error) ? couponCode.trim() : undefined,
           notes,
+          paymentMethod,
         }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Order failed');
 
-      clearCart();
-      navigate(`/order-confirmation/${data.data._id}`, { state: { order: data.data } });
+      if (paymentMethod === 'Razorpay') {
+        const isScriptLoaded = await loadRazorpayScript();
+        if (!isScriptLoaded) {
+          throw new Error('Razorpay SDK failed to load. Please check your network connection.');
+        }
+
+        const options = {
+          key: data.razorpayKeyId,
+          amount: Math.round(data.data.totalAmount * 100),
+          currency: 'INR',
+          name: 'LUCIFUR CLOTHING',
+          description: 'Order Payment',
+          order_id: data.data.razorpayOrderId,
+          handler: async function (response) {
+            try {
+              setLoading(true);
+              const verifyRes = await fetch(`${API_URL}/orders/verify`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                }),
+              });
+              const verifyData = await verifyRes.json();
+              if (!verifyRes.ok) {
+                throw new Error(verifyData.message || 'Payment verification failed');
+              }
+
+              clearCart();
+              navigate(`/order-confirmation/${verifyData.data._id}`, { state: { order: verifyData.data } });
+            } catch (verifyErr) {
+              setError(verifyErr.message);
+              setLoading(false);
+            }
+          },
+          prefill: {
+            name: address.fullName,
+            email: address.email,
+            contact: address.phone,
+          },
+          config: {
+            display: {
+              hide: [
+                { method: 'card' },
+                { method: 'netbanking' },
+                { method: 'wallet' },
+                { method: 'emi' },
+                { method: 'paylater' }
+              ],
+              preferences: {
+                show_default_blocks: true,
+              },
+            },
+          },
+          theme: {
+            color: '#111111',
+          },
+          modal: {
+            ondismiss: function () {
+              setError('Payment cancelled by user');
+              setLoading(false);
+            },
+          },
+        };
+
+        const rzp = new window.Razorpay(options);
+        rzp.open();
+      } else {
+        clearCart();
+        navigate(`/order-confirmation/${data.data._id}`, { state: { order: data.data } });
+      }
     } catch (err) {
       setError(err.message);
-    } finally {
       setLoading(false);
     }
   };
@@ -118,18 +229,21 @@ const Checkout = () => {
                   <div className={styles.formGroup}>
                     <label>Full Name *</label>
                     <input name="fullName" value={address.fullName} onChange={handleAddressChange}
-                      placeholder="John Doe" required />
+                      placeholder="John Doe" autoComplete="name" required />
                   </div>
                   <div className={styles.formGroup}>
                     <label>Phone Number *</label>
                     <input name="phone" value={address.phone} onChange={handleAddressChange}
-                      placeholder="+91 9999999999" required />
+                      placeholder="+91 9999999999" autoComplete="tel"
+                      pattern="[\+]?[\d\s\-]{10,15}"
+                      title="Please enter a valid phone number"
+                      required />
                   </div>
                 </div>
                 <div className={styles.formGroup}>
                   <label>Email Address *</label>
                   <input name="email" type="email" value={address.email} onChange={handleAddressChange}
-                    placeholder="you@example.com" required />
+                    placeholder="you@example.com" autoComplete="email" required />
                 </div>
               </div>
 
@@ -139,34 +253,37 @@ const Checkout = () => {
                 <div className={styles.formGroup}>
                   <label>Street Address *</label>
                   <input name="street" value={address.street} onChange={handleAddressChange}
-                    placeholder="123 Main Street" required />
+                    placeholder="123 Main Street" autoComplete="street-address" required />
                 </div>
                 <div className={styles.formGroup}>
                   <label>Apartment / Floor (optional)</label>
                   <input name="apartment" value={address.apartment} onChange={handleAddressChange}
-                    placeholder="Apt 4B, Floor 2..." />
+                    placeholder="Apt 4B, Floor 2..." autoComplete="address-line2" />
                 </div>
                 <div className={styles.formRow}>
                   <div className={styles.formGroup}>
                     <label>City *</label>
                     <input name="city" value={address.city} onChange={handleAddressChange}
-                      placeholder="Mumbai" required />
+                      placeholder="Mumbai" autoComplete="address-level2" required />
                   </div>
                   <div className={styles.formGroup}>
                     <label>State *</label>
                     <input name="state" value={address.state} onChange={handleAddressChange}
-                      placeholder="Maharashtra" required />
+                      placeholder="Maharashtra" autoComplete="address-level1" required />
                   </div>
                 </div>
                 <div className={styles.formRow}>
                   <div className={styles.formGroup}>
                     <label>PIN / ZIP Code *</label>
                     <input name="zipCode" value={address.zipCode} onChange={handleAddressChange}
-                      placeholder="400001" required />
+                      placeholder="400001" autoComplete="postal-code"
+                      pattern="[0-9]{6}"
+                      title="PIN code must be 6 digits"
+                      required />
                   </div>
                   <div className={styles.formGroup}>
                     <label>Country</label>
-                    <select name="country" value={address.country} onChange={handleAddressChange}>
+                    <select name="country" value={address.country} onChange={handleAddressChange} autoComplete="country-name">
                       <option>India</option>
                       <option>United States</option>
                       <option>United Kingdom</option>
@@ -212,18 +329,11 @@ const Checkout = () => {
                 />
               </div>
 
-              {/* Payment */}
               <div className={styles.formSection}>
                 <h2>Payment Method</h2>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <input type="radio" id="cod" name="payment" defaultChecked readOnly />
-                  <label htmlFor="cod" style={{ fontSize: '0.85rem', letterSpacing: '1px', cursor: 'pointer' }}>
-                    Cash on Delivery (COD)
-                  </label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 10, fontSize: '0.85rem', letterSpacing: '1px' }}>
+                  <span>Cash on Delivery (COD)</span>
                 </div>
-                <p style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', marginTop: 8, letterSpacing: '1px' }}>
-                  Online payment gateway coming soon.
-                </p>
               </div>
 
               {error && <div className={styles.errorMsg}>{error}</div>}
@@ -242,7 +352,7 @@ const Checkout = () => {
 
                 {cartItems.map((item) => (
                   <div key={`${item._id}-${item.selectedSize}`} className={styles.orderItem}>
-                    {item.image && <img src={item.image} alt={item.name} />}
+                    {item.image && <img src={item.image} alt={item.name} loading="lazy" />}
                     <div className={styles.orderItemInfo}>
                       <p className={styles.orderItemName}>{item.name}</p>
                       <p className={styles.orderItemMeta}>
@@ -282,7 +392,7 @@ const Checkout = () => {
                 </button>
 
                 <p style={{ fontSize: '0.62rem', letterSpacing: '1px', color: 'var(--text-secondary)', textAlign: 'center', marginTop: 14 }}>
-                  🔒 Secure checkout · 30-day returns
+                  🔒 Secure checkout · 2-day exchanges only
                 </p>
               </div>
             </div>

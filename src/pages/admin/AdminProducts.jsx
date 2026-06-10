@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Pencil, Trash2, Search } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, Package } from 'lucide-react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import { adminApi } from '../../utils/adminApi';
+import { useDocumentTitle } from '../../utils/useDocumentTitle';
 import styles from './admin.module.css';
+
+const normalizeString = (str) => {
+  if (!str) return '';
+  return str.toLowerCase().replace(/[^a-z0-9]/g, '');
+};
 
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);
@@ -11,6 +17,7 @@ const AdminProducts = () => {
   const [search, setSearch] = useState('');
   const [deleting, setDeleting] = useState(null);
   const navigate = useNavigate();
+  useDocumentTitle('Admin Products');
 
   const fetchProducts = () => {
     setLoading(true);
@@ -38,39 +45,34 @@ const AdminProducts = () => {
     }
   };
 
-  const filtered = products.filter((p) =>
-    p.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const normalizedSearch = normalizeString(search);
+  const filtered = products.filter((p) => {
+    if (!normalizedSearch) return true;
+    const nameMatch = normalizeString(p.name).includes(normalizedSearch);
+    const catMatch = normalizeString(p.category).includes(normalizedSearch);
+    return nameMatch || catMatch;
+  });
 
   return (
     <AdminLayout pageTitle="Products">
       <div className={styles.tableWrapper}>
         <div className={styles.tableHeader}>
           <h2>All Products ({filtered.length})</h2>
-          <div className={styles.actionsGroup}>
-            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+          <div className={styles.headerActions}>
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%', maxWidth: '180px' }}>
               <Search
                 size={14}
                 style={{ position: 'absolute', left: 10, color: 'var(--text-secondary)' }}
               />
               <input
-                style={{
-                  background: 'var(--bg-primary)',
-                  border: '1px solid var(--border)',
-                  color: 'var(--text-primary)',
-                  padding: '6px 12px 6px 30px',
-                  fontSize: '0.78rem',
-                  fontFamily: 'var(--font-main)',
-                  outline: 'none',
-                  width: '180px',
-                }}
+                className={styles.adminSearchInput}
                 placeholder="Search products..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
-            <Link to="/admin/products/add">
-              <button className={`${styles.actionBtn} ${styles.primary}`}>
+            <Link to="/admin/products/add" style={{ width: '100%', maxWidth: '180px' }} className={styles.headerActions ? '' : ''}>
+              <button className={`${styles.actionBtn} ${styles.primary}`} style={{ width: '100%' }}>
                 <Plus size={14} style={{ marginRight: 4, verticalAlign: 'middle' }} />
                 Add Product
               </button>
@@ -83,22 +85,22 @@ const AdminProducts = () => {
         ) : filtered.length === 0 ? (
           <div className={styles.emptyState}>No products found</div>
         ) : (
-          <table className={styles.table}>
+          <table className={`${styles.table} ${styles.tableProducts}`}>
             <thead>
               <tr>
-                <th>Image</th>
+                <th className={styles.hideBelow480}>Image</th>
                 <th>Name</th>
                 <th>Category</th>
                 <th>Price</th>
                 <th>Stock</th>
-                <th>Featured</th>
+                <th className={styles.hideBelow768}>Featured</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {filtered.map((product) => (
-                <tr key={product._id}>
-                  <td>
+                <tr key={product._id} style={deleting === product._id ? { pointerEvents: 'none', opacity: 0.5 } : {}}>
+                  <td className={styles.hideBelow480}>
                     {product.images?.[0] ? (
                       <img
                         src={product.images[0]}
@@ -144,7 +146,7 @@ const AdminProducts = () => {
                       {product.stock}
                     </span>
                   </td>
-                  <td>
+                  <td className={styles.hideBelow768}>
                     {product.isFeatured ? (
                       <span className={`${styles.badge} ${styles.delivered}`}>Yes</span>
                     ) : (

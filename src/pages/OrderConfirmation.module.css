@@ -169,7 +169,29 @@
   justify-content: center;
 }
 
+@media (max-width: 768px) {
+  .page {
+    padding-top: 110px;
+    padding-bottom: 60px;
+  }
+  .card {
+    padding: 32px 24px;
+  }
+}
+
 @media (max-width: 480px) {
-  .card { padding: 32px 20px; }
-  .actions { flex-direction: column; }
+  .card {
+    padding: 24px 16px;
+  }
+  .heading {
+    font-size: 1.5rem;
+    letter-spacing: 3px;
+  }
+  .actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .actions a {
+    width: 100%;
+  }
 }

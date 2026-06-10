@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { heroSlides } from '../data/products';
 import styles from './Hero.module.css';
@@ -51,9 +52,9 @@ const Hero = () => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.9, duration: 0.8 }}
               >
-                <button className="premium-btn">
+                <Link to="/shop" className="premium-btn">
                   {heroSlides[current].cta}
-                </button>
+                </Link>
               </motion.div>
             </div>
           </div>
